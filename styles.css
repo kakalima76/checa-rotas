@@ -1,0 +1,16 @@
+body,
+html {
+  height: 100%;
+  margin: 0;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+#map {
+  flex: 1;
+  height: 600px; /* Altura do mapa */
+}
