@@ -235,6 +235,7 @@ new Vue({
         });
     },
     carregarLocais() {
+      this.prefixos = [];
       fetch(`${this.base}/roteiros`)
         .then((response) => response.json())
         .then((data) => {
