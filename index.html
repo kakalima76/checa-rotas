@@ -105,7 +105,8 @@
                 :key="item.placa"
                 :value="item.placa"
               >
-                {{ item.prefixo }}
+                {{ item.roteiro === roteiro ? item.prefixo + ' ' + 'previsto' :
+                item.prefixo + ' (' + item.roteiro + ')'}}
               </option>
             </select>
           </div>

@@ -386,18 +386,7 @@ new Vue({
         (item) => item.gerencia === this.gerencia
       );
 
-      filter.forEach((el) => {
-        const index = arr.findIndex((x) => x.placa === el.placa);
-        if (index === -1) {
-          if (el.roteiro === this.roteiro) {
-            el.prefixo = el.prefixo + " " + "(previsto)";
-          }
-
-          arr.push(el);
-        }
-      });
-
-      return arr.filter((x) => x.gerencia === this.gerencia);
+      return this.prefixos.filter((x) => x.gerencia === this.gerencia);
     },
   },
 });
