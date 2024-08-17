@@ -14,3 +14,10 @@ html {
   flex: 1;
   height: 600px; /* Altura do mapa */
 }
+
+.scroll-view {
+  height: 35vh; /* 35% da altura da viewport */
+  overflow-y: scroll; /* Habilita o scroll vertical */
+  border: 1px solid #ccc; /* Opcional: Adiciona uma borda para visualização */
+  padding: 10px; /* Espaçamento interno */
+}
