@@ -93,6 +93,23 @@ new Vue({
         Swal.fire("Aviso", "Nova consulta liberada.", "warning");
       }, this.intervalo);
     },
+    adicionarUmDia(dataStr) {
+      // Converte a string de data para um objeto Date
+      const data = new Date(dataStr.replace(" ", "T"));
+
+      // Adiciona um dia em milissegundos (24 horas * 60 minutos * 60 segundos * 1000 milissegundos)
+      data.setDate(data.getDate() + 1);
+
+      // Formata a data de volta para o formato original "YYYY-MM-DD HH:mm:ss"
+      const ano = data.getFullYear();
+      const mes = String(data.getMonth() + 1).padStart(2, "0");
+      const dia = String(data.getDate()).padStart(2, "0");
+      const horas = String(data.getHours()).padStart(2, "0");
+      const minutos = String(data.getMinutes()).padStart(2, "0");
+      const segundos = String(data.getSeconds()).padStart(2, "0");
+
+      return `${ano}-${mes}-${dia} ${horas}:${minutos}:${segundos}`;
+    },
     buscarRoteiro() {
       this.limparMapa();
 
@@ -147,7 +164,14 @@ new Vue({
       const { inicio, fim } = roteiro[0];
 
       this.inicio = `${this.data} ${inicio.toString().padStart(2, "0")}:00:00`;
-      this.fim = `${this.data} ${fim.toString().padStart(2, "0")}:00:00`;
+
+      if (inicio > fim) {
+        this.fim = `${this.adicionarMarcador(this.data)} ${fim
+          .toString()
+          .padStart(2, "0")}:00:00`;
+      } else {
+        this.fim = `${this.data} ${fim.toString().padStart(2, "0")}:00:00`;
+      }
 
       const data = {
         bearer: this.bearer,
