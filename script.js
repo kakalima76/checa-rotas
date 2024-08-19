@@ -215,6 +215,7 @@ new Vue({
             });
 
           this.show = true;
+          this.data = null;
         })
         .then(() => this.adicionarTempo(this.intervalo))
         .catch((error) => {
