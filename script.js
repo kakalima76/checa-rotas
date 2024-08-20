@@ -28,6 +28,15 @@ new Vue({
     intervalo: 120000,
     showIntervalo: false,
     liberacao: null,
+    olhoAberto: true,
+    dias: null,
+    listaDias: [
+      "seg-qua-sexta",
+      "terça-quinta-sábado",
+      "seg-a-sab",
+      "seg-a-dom",
+      "sab",
+    ],
   },
   watch: {
     trechos: function (n, o) {
@@ -62,6 +71,28 @@ new Vue({
     this.carregarLocais();
   },
   methods: {
+    adicionarBotaoMapa() {
+      const customButton = L.control({ position: "topright" });
+
+      customButton.onAdd = () => {
+        const button = L.DomUtil.create("button", "custom-button");
+        this.updateButtonIcon(button); // Define o ícone inicial
+
+        button.style.backgroundColor = "#fff";
+        button.style.padding = "5px 10px";
+        button.style.border = "1px solid #ccc";
+        button.style.cursor = "pointer";
+
+        L.DomEvent.on(button, "click", () => {
+          this.olhoAberto = !this.olhoAberto; // Alterna o estado do ícone
+          this.updateButtonIcon(button); // Atualiza o ícone do botão
+        });
+
+        return button;
+      };
+
+      customButton.addTo(this.map);
+    },
     adicionarMarcador(latitude, longitude, nome, vetor) {
       // Cria um marcador usando as coordenadas fornecidas
       const marker = L.marker([latitude, longitude]).addTo(this.map);
@@ -161,21 +192,20 @@ new Vue({
       this.buscarRoteiro();
 
       const roteiro = this.prefixos.filter((x) => x.roteiro === this.roteiro);
-      const { inicio, fim } = roteiro[0];
+      const { inicio, fim, turno, placa, dias } = roteiro[0];
+      this.dias = dias;
 
-      this.inicio = `${this.data} ${inicio.toString().padStart(2, "0")}:00:00`;
+      this.inicio = `${this.data} ${inicio}`;
 
-      if (inicio > fim) {
-        this.fim = `${this.adicionarMarcador(this.data)} ${fim
-          .toString()
-          .padStart(2, "0")}:00:00`;
+      if (turno === 2) {
+        this.fim = `${this.adicionarUmDia(this.data)} ${fim}`;
       } else {
-        this.fim = `${this.data} ${fim.toString().padStart(2, "0")}:00:00`;
+        this.fim = `${this.data} ${fim}`;
       }
 
       const data = {
         bearer: this.bearer,
-        placa: this.placa,
+        placa: placa,
         inicio: this.inicio,
         fim: this.fim,
       };
@@ -220,6 +250,7 @@ new Vue({
         .then(() => this.adicionarTempo(this.intervalo))
         .catch((error) => {
           this.show = true;
+          this.data = null;
           Swal.fire("Error", error.message, "error");
         });
     },
@@ -319,6 +350,8 @@ new Vue({
           maxZoom: 19,
         }
       ).addTo(this.map);
+
+      this.adicionarBotaoMapa();
     },
     irParaPonto() {
       if (this.ponto >= 0 && this.ponto < this.pontos.length) {
@@ -367,6 +400,14 @@ new Vue({
     },
     updateRoteiros() {
       this.roteiro = ""; // Reset the selected roteiro
+    },
+    updateButtonIcon(button) {
+      // Atualiza o ícone do botão com base no estado atual
+      if (this.olhoAberto) {
+        button.innerHTML = '<i class="fas fa-eye"></i>'; // Ícone de olho aberto
+      } else {
+        button.innerHTML = '<i class="fas fa-eye-slash"></i>'; // Ícone de olho fechado
+      }
     },
   },
   computed: {

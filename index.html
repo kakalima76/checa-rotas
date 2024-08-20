@@ -34,7 +34,7 @@
         </div>
       </div>
 
-      <div v-else="show === true" class="scroll-view">
+      <div class="scroll-view" v-else="show === true" v-show="!olhoAberto">
         <div class="container-fluid">
           <div class="form-group">
             <label for="bearerInput">Token</label>
@@ -50,6 +50,8 @@
               @change="limparMapa"
             >
               <option value="" disabled selected>Selecione...</option>
+              <option value="5">5</option>
+              <option value="10">10</option>
               <option value="25">25</option>
               <option value="50">50</option>
               <option value="100">100</option>
@@ -152,6 +154,7 @@
           </div>
         </div>
       </div>
+
       <div id="map" style="height: 100%"></div>
     </div>
     <script src="./script.js"></script>
