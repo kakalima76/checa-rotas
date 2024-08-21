@@ -58,6 +58,21 @@
             </select>
           </div>
           <div class="form-group">
+            <label for="selectAcrescentar">Acréscimos</label>
+            <select
+              class="form-control"
+              id="selectAcrescentar"
+              v-model="acrescimo"
+            >
+              <option value="0" disabled selected>Selecione...</option>
+              <option value="1">1 hora</option>
+              <option value="2">2 horas</option>
+              <option value="3">3 horas</option>
+              <option value="4">4 horas</option>
+              <option value="5">5 horas</option>
+            </select>
+          </div>
+          <div class="form-group">
             <label for="selectGerencia">Gerência</label>
             <select
               class="form-control"
@@ -92,6 +107,9 @@
                 {{ roteiroItem }}
               </option>
             </select>
+            <smal v-show="showIntervalo" style="margin-left: 1em; color: blue"
+              >{{listaDias[dias]}} {{periodo}}
+            </smal>
           </div>
           <div class="form-group">
             <label for="selectTurno">Veículos</label>

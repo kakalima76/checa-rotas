@@ -31,12 +31,14 @@ new Vue({
     olhoAberto: true,
     dias: null,
     listaDias: [
-      "seg-qua-sexta",
-      "terça-quinta-sábado",
-      "seg-a-sab",
-      "seg-a-dom",
-      "sab",
+      "segunda a sábado",
+      "segundas, quartas e sextas",
+      "terças, quintas e sábados",
+      "segunda a domingo",
+      "sábados",
     ],
+    periodo: null,
+    acrescimo: 0,
   },
   watch: {
     trechos: function (n, o) {
@@ -71,6 +73,20 @@ new Vue({
     this.carregarLocais();
   },
   methods: {
+    acrescentarHora(hora) {
+      // Converter a string de hora em um objeto Date
+      let [horas, minutos, segundos] = hora.split(":").map(Number);
+
+      let soma = parseInt(horas) + parseInt(this.acrescimo);
+      console.log(typeof soma);
+
+      const novaHora = String(soma).padStart(2, "0");
+      const novoMinuto = String(minutos).padStart(2, "0");
+      const novoSegundo = String(segundos).padStart(2, "0");
+
+      // Retornar a nova hora como string no formato "HH:MM:SS"
+      return `${novaHora}:${novoMinuto}:${novoSegundo}`;
+    },
     adicionarBotaoMapa() {
       const customButton = L.control({ position: "topright" });
 
@@ -198,10 +214,16 @@ new Vue({
       this.inicio = `${this.data} ${inicio}`;
 
       if (turno === 2) {
-        this.fim = `${this.adicionarUmDia(this.data)} ${fim}`;
+        this.fim = `${this.adicionarUmDia(this.data)} ${this.acrescentarHora(
+          fim
+        )}`;
       } else {
-        this.fim = `${this.data} ${fim}`;
+        this.fim = `${this.data} ${this.acrescentarHora(fim)}`;
       }
+
+      this.periodo = `(${inicio} as ${fim})`;
+
+      console.log(this.periodo);
 
       const data = {
         bearer: this.bearer,
@@ -291,7 +313,7 @@ new Vue({
     criarIcone(text, max) {
       const html =
         text == "0" || max === true
-          ? `<div style="background-color: #8B0000; color: #FFFFFF; border-radius: 50%; width: 21px; height: 21px; display: flex; align-items: center; justify-content: center; font-size: 14px;">${text}</div>`
+          ? `<div style="background-color: #000; color: #FFFFFF; border-radius: 50%; width: 21px; height: 21px; display: flex; align-items: center; justify-content: center; font-size: 14px;">${text}</div>`
           : `<div style="background-color: #1E90FF; color: #FFFFFF; border-radius: 50%; width: 21px; height: 21px; display: flex; align-items: center; justify-content: center; font-size: 14px;">${text}</div>`;
 
       return L.divIcon({
@@ -378,7 +400,7 @@ new Vue({
       this.trechos.forEach((trecho) => {
         const polilinha = L.polyline(trecho.polilinha, {
           color: "red", // Cor fixa para a polilinha
-          weight: 4, // Espessura da linha
+          weight: 6, // Espessura da linha
           opacity: 0.8, // Opacidade da linha
         }).addTo(this.map);
 
@@ -389,8 +411,8 @@ new Vue({
     renderizarPercurso() {
       const polilinha = L.polyline(this.percurso, {
         color: "blue", // Cor fixa para a polilinha
-        weight: 1, // Espessura da linha
-        opacity: 0.5, // Opacidade da linha
+        weight: 2.5, // Espessura da linha
+        opacity: 0.75, // Opacidade da linha
       }).addTo(this.map);
 
       // Centralizar o mapa na primeira polilinha adicionada
